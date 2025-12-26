@@ -1,7 +1,17 @@
-// 간단 플레이스홀더
+const User = require("../models/user");
+
 exports.login = async (req, res) => {
   const { name } = req.body;
   if (!name) return res.status(400).json({ error: "name required" });
-  // 실제 구현: 사용자 생성/조회 및 토큰 발급
-  return res.json({ id: Date.now().toString(), name });
+
+  try {
+    let user = await User.findOne({ name });
+    if (!user) {
+      user = await User.create({ name });
+    }
+    return res.json({ id: user._id.toString(), name: user.name, avatar: user.avatar || null });
+  } catch (err) {
+    console.error("login error", err);
+    return res.status(500).json({ error: "login_failed" });
+  }
 };

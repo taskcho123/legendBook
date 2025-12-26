@@ -9,7 +9,10 @@ const authRoutes = require("./routes/auth");
 const booksRoutes = require("./routes/books");
 const seatsRoutes = require("./routes/seats");
 const realtimeRoutes = require("./routes/realtime");
+const reservationsRoutes = require("./routes/reservations");
+const studytimeRoutes = require("./routes/studytime");
 const { setupRealtime } = require("./controllers/realtimeController");
+const { scheduleDailyReset } = require("./controllers/studyTimeController");
 const { connectDB } = require("./config/db");
 
 const app = express();
@@ -24,12 +27,18 @@ app.use("/api/auth", authRoutes);
 app.use("/api/books", booksRoutes);
 app.use("/api/seats", seatsRoutes);
 app.use("/api/realtime", realtimeRoutes);
+app.use("/api/reservations", reservationsRoutes);
+app.use("/api/studytime", studytimeRoutes);
 
 // static for client build (optional)
 // app.use(express.static(path.join(__dirname, "../dist")));
 
 // DB
-connectDB();
+connectDB()
+  .then(() => {
+    scheduleDailyReset();
+  })
+  .catch((err) => console.error("DB connection failed", err));
 
 // Socket setup
 setupRealtime(io);
