@@ -1,0 +1,16 @@
+import React from "react";
+
+export default function MenuItem({ children }) {
+  return (
+    <div
+      style={{
+        padding: 12,
+        border: "1px solid #ddd",
+        borderRadius: 8,
+        marginBottom: 8,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
